@@ -1,5 +1,15 @@
+"""
+Basic functionality for plotting Minkowski sums of 3 and 2 dimensional shapes.
+
+Author: Seth Barber
+Date: April 29, 2023
+
+Citations:
+
+For information about plotting in 3 dimensions using Matplotlib:
 # https://matplotlib.org/stable/gallery/mplot3d/surface3d_2.html#sphx-glr-gallery-mplot3d-surface3d-2-py
 # https://stackoverflow.com/questions/51574861/plotting-3d-surface-using-python-raise-valueerrorargument-z-must-be-2-dimensi
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +21,13 @@ TRIANGLE = [(0, 0, 0), (2, 0, 0), (1, np.sqrt(3), 0)]
 
 
 def flip_dimension(shape, *args):
+    """
+    Flip the shape through one or more dimensions. For example, in flipping across the x-axis, it is actually y that
+    is effected, so 1 for y is passed.
+    :param shape: An iterable container of tuples representing position vectors in the shape
+    :param args: 0 for x, 1 for y, 2 for z
+    :return: None
+    """
     for i in range(len(shape)):
         new_vec = list(shape[i])
         for n in args:
@@ -19,6 +36,13 @@ def flip_dimension(shape, *args):
 
 
 def scale_dimension(shape, factor, *args):
+    """
+    Scale the shape so that
+    :param shape: An iterable container of tuples representing position vectors in the shape
+    :param factor: The factor to scale by
+    :param args: The dimensions to scale (0 for x, 1 for y, 2 for z)
+    :return: None
+    """
     for i in range(len(shape)):
         new_vec = list(shape[i])
         for n in args:
@@ -27,6 +51,11 @@ def scale_dimension(shape, factor, *args):
 
 
 def to_arrays_3d(shape):
+    """
+    Used to convert a shape into three separate numpy arrays for graphing using Matplotlib
+    :param shape: An iterable of tuples representing position vectors in the shape
+    :return: Numpy arrays x, y, and z
+    """
     temp_x = list()
     temp_y = list()
     temp_z = list()
@@ -42,6 +71,11 @@ def to_arrays_3d(shape):
 
 
 def plot_shape(shape):
+    """
+    Plot the shape
+    :param shape: An iterable of tuples representing position vectors in the shape
+    :return: None
+    """
     x, y, z = to_arrays_3d(shape)
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')

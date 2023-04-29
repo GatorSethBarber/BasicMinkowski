@@ -1,4 +1,17 @@
+"""
+Implements Minkowski addition
+
+Author: Seth Barber
+Date: April 29, 2023
+"""
+
 def minkowski_basic(first, second):
+    """
+    Brute force Minkowski addition
+    :param first: The first shape (as an iterable of iterable position vectors)
+    :param second: The second shape (as an iterable of iterable position vectors)
+    :return: The Minkowski sum
+    """
     new_shape = set()
     dimension = 0
     if len(first) > 0:
