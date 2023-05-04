@@ -16,5 +16,6 @@ all shapes produced should be convex.
 
 The video below demonstrates an example of running the program:
 
-https://user-images.githubusercontent.com/100868317/235326232-61f3a833-1260-4298-bc23-1f36cfbdd30d.mp4
+
+https://user-images.githubusercontent.com/100868317/236080658-c923b542-4d42-4ec3-8350-7e0fe3fe49b1.mp4
 
