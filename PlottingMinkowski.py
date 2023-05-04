@@ -6,13 +6,29 @@ Date: April 29, 2023
 
 Citations:
 
-For information about plotting in 3 dimensions using Matplotlib:
-# https://matplotlib.org/stable/gallery/mplot3d/surface3d_2.html#sphx-glr-gallery-mplot3d-surface3d-2-py
-# https://stackoverflow.com/questions/51574861/plotting-3d-surface-using-python-raise-valueerrorargument-z-must-be-2-dimensi
+[1] and [2] for triangularization, [3] and [4] for general 3d plotting
+
+[1] JohanC, "How to visualize polyhedrons defined by their vertices in 3D with matplotlib or/and plotly offline?",
+StackOverflow, Aug. 1, 2020. [Online.]
+Available: https://stackoverflow.com/questions/63207496/how-to-visualize-polyhedrons-defined-by-
+their-vertices-in-3d-with-matplotlib-or. [Accessed May 3, 2023]
+
+[2] "scipy.spatial.ConvexHull", SciPy Documentation, 2023. [Online.]
+Available: https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.ConvexHull.html. [Accessed May 3, 2023]
+
+[3] "3D surface (solid color)", Matplotlib, 2023. [Online.]
+Available: https://matplotlib.org/stable/gallery/mplot3d/surface3d_2.html#sphx-glr-gallery-mplot3d-surface3d-2-py.
+[Accessed May 3, 2023]
+
+[4] dtward, "Plotting 3D surface using python: raise ValueError("Argument Z must be 2-dimensional.")
+matplotlib [duplicate]", StackOverflow, Jul. 28, 2018. [Online.]
+Available: https://stackoverflow.com/questions/51574861/plotting-3d-surface-using-python-raise-valueerrorargument
+-z-must-be-2-dimensi. [Accessed May 3, 2023]
 """
 
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.spatial import ConvexHull
 import minkowski
 
 
@@ -50,45 +66,55 @@ def scale_dimension(shape, factor, *args):
         shape[i] = tuple(new_vec)
 
 
-def to_arrays_3d(shape):
+def get_triangularization(shape):
     """
-    Used to convert a shape into three separate numpy arrays for graphing using Matplotlib
-    :param shape: An iterable of tuples representing position vectors in the shape
-    :return: Numpy arrays x, y, and z
+    Gets the triangularization of the shape. Based off of information and code
+    provided by [1] and [2]
     """
-    temp_x = list()
-    temp_y = list()
-    temp_z = list()
-    for vec in shape:
-        temp_x.append(vec[0])
-        temp_y.append(vec[1])
-        temp_z.append(vec[2])
-    x = np.array(temp_x)
-    y = np.array(temp_y)
-    z = np.array(temp_z)
-
-    return x, y, z
+    if len(shape) < 3:
+        raise SyntaxError("Cannot compute triangulization for under 3 vertices.")
+    if len(shape) == 3:
+        return np.array([[0, 1, 2]])
+    else:
+        return ConvexHull(np.array([list(vec) for vec in shape])).simplices
 
 
 def plot_shape(shape):
     """
-    Plot the shape
+    Plot the shape. Note: Learned about plotting 3d through sources [3] and [3] and
+    the animation from source [5].
     :param shape: An iterable of tuples representing position vectors in the shape
     :return: None
     """
-    x, y, z = to_arrays_3d(shape)
+    # x, y, z = to_arrays_3d(shape)
+    new_array = np.array([list(vec) for vec in shape])
+    x = new_array[:, 0]
+    y = new_array[:, 1]
+    z = new_array[:, 2]
+
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
 
-    ax.plot_trisurf(x, y, z)
+    # Set lables (from source [5])
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+
+    # Case 1: Two dimensional: Default triangulization is fine.
+    if np.argmax(x) == np.argmin(x) or np.argmax(y) == np.argmin(y) or np.argmin(z) == np.argmax(z):
+        ax.plot_trisurf(x, y, z)
+
+    # Case 2: Three dimensional: Get Convex hull
+    else:
+        ax.plot_trisurf(x, y, z, triangles=get_triangularization(shape), antialiased=False)
+
     plt.show()
 
 
 if __name__ == '__main__':
     tetraOne = TETRAHEDRON.copy()
     tetraTwo = tetraOne.copy()
-    flip_dimension(tetraTwo, 1)
-    scale_dimension(tetraTwo, 2, 1)
+    flip_dimension(tetraTwo, 1, 2)
     plot_shape(tetraOne)
     plot_shape(tetraTwo)
     plot_shape(minkowski.minkowski_basic(tetraOne, tetraTwo))

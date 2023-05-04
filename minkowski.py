@@ -5,6 +5,7 @@ Author: Seth Barber
 Date: April 29, 2023
 """
 
+
 def minkowski_basic(first, second):
     """
     Brute force Minkowski addition
